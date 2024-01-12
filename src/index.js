@@ -25,34 +25,12 @@ const panelConfig = {
   ]
 };
 
-async function onload({extensionAPI}) {
-  // set defaults if they dont' exist
-  if (!extensionAPI.settings.get('data')) {
-      await extensionAPI.settings.set('data', "01");
-  }
-  extensionAPI.settings.panel.create(panelConfig);
-
-  console.log("load example plugin");
-}
-
-function onunload() {
-  console.log("unload example plugin");
-}
-
-export default {
-onload,
-onunload
-};
-
-
 // Eli's wishlist
 
-// 1. Function that writes some children
-// 2. Function that grabs the data in the parent block.
-// 3. Hot key.
-// 4. GPT API
-
-
+// 1. ✅ Function that writes some children 
+// 2.    Function that grabs the data in the parent block.
+// 3. ✅ Hot key
+// 4.    GPT API
 
 // Function that updates a bloc string and adds some children, with helper functions.
 
@@ -94,5 +72,54 @@ function fillInBlockWithChildren (blockUID, headerString, childrenContents) {
 }
 
 
-// Hotkey that calls fillInBlockWithChildren
+// Function that grabs the uid of the block you're in.
+
+
+
+
+
+
+
+
+
+
+
+
+
+async function onload({extensionAPI}) {
+  // set defaults if they dont' exist
+  // if (!extensionAPI.settings.get('data')) {
+  //     await extensionAPI.settings.set('data', "01");
+  // }
+
+  // Creating a setting panel
+  extensionAPI.settings.panel.create(panelConfig);
+
+  // Creating a new command palette command
+  extensionAPI.ui.commandPalette.addCommand({label: "create cards",
+                                                    callback : () => {
+                                                      let block = window.roamAlphaAPI.ui.getFocusedBlock();
+                                                      if (block != null) {
+                                                        console.log(block['block-uid']);
+                                                        fillInBlockWithChildren(block['block-uid'], "Pretend GPT output:", exampleJSON)
+                                                      }
+                                                    },
+                                                    "disable-hotkey": false,
+                                                    "default-hotkey": "option-cmd-g"})
+
+
+  console.log("load example plugin");
+
+}
+
+function onunload() {
+  console.log("unload example plugin");
+  
+
+}
+
+export default {
+onload,
+onunload
+};
 
