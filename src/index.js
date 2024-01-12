@@ -43,3 +43,61 @@ export default {
 onload,
 onunload
 };
+
+
+// Eli's wishlist
+
+// 1. Function that writes some children
+// 2. Function that grabs the data in the parent block.
+// 3. Hot key.
+// 4. GPT API
+
+
+
+async function updateBlock (blockUid, blockContent) {
+
+}
+
+
+const exampleJSON = [
+    {string: "test 1"},
+    {string: "test 2"}, 
+    {string : "test3", children : 
+    [{string: "test 4"}, {string: "test 5"}]
+  }
+]
+
+
+async function updateBlock () {
+
+}
+
+async function createBlock() {
+
+}
+
+
+
+async function createChildren (blockUid, childrenContents) {
+  for (let index = 0; index < childrenContents.length; index++) {
+    const element = childrenContents[index];
+    const newBlockUID = roamAlphaAPI.util.generateUID();  
+    window.roamAlphaAPI.createBlock(
+        {"location": 
+          {"parent-uid": blockUid, "order": "last"}, 
+        "block": 
+          {"string": element.string, "uid": newBlockUID}
+        },  
+        )
+      if (element.children) {
+        createChildren(newBlockUID, element.children)
+      }
+      }
+
+}
+
+
+function fillinBlockWithChildren (blockUID, blockContent) {
+  
+
+}
