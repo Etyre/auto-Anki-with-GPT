@@ -54,10 +54,7 @@ onunload
 
 
 
-async function updateBlock (blockUid, blockContent) {
-
-}
-
+// Function that updates a bloc string and adds some children, with helper functions.
 
 const exampleJSON = [
     {string: "test 1"},
@@ -67,16 +64,11 @@ const exampleJSON = [
   }
 ]
 
-
-async function updateBlock () {
-
+async function updateBlock (uid, newString) {
+  window.roamAlphaAPI.data.block.update({"block" : 
+                                          {"uid": uid, 
+                                          "string": newString}})
 }
-
-async function createBlock() {
-
-}
-
-
 
 async function createChildren (blockUid, childrenContents) {
   for (let index = 0; index < childrenContents.length; index++) {
@@ -93,11 +85,14 @@ async function createChildren (blockUid, childrenContents) {
         createChildren(newBlockUID, element.children)
       }
       }
+}
 
+function fillInBlockWithChildren (blockUID, headerString, childrenContents) {
+  updateBlock(blockUID, headerString)
+
+  createChildren(blockUID, childrenContents)
 }
 
 
-function fillinBlockWithChildren (blockUID, blockContent) {
-  
+// Hotkey that calls fillInBlockWithChildren
 
-}
