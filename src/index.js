@@ -28,7 +28,7 @@ const panelConfig = {
 // Eli's wishlist
 
 // 1. ✅ Function that writes some children 
-// 2.    Function that grabs the data in the parent block.
+// 2. ✅ Function that grabs the data in the parent block.
 // 3. ✅ Hot key
 // 4.    GPT API
 
@@ -71,8 +71,31 @@ function fillInBlockWithChildren (blockUID, headerString, childrenContents) {
   createChildren(blockUID, childrenContents)
 }
 
+// Function that grabs the contents of the parent of the the block you call the function from.
 
-// Function that grabs the uid of the block you're in.
+async function pullParentBlocksContent(uid) {
+  let query = `[:find (pull ?e [* {:block/parents ...}])
+              ; The syntax of {: block/parents ...} means "pull the parents recursively"
+                      :in $ ?namespace
+                      :where 
+            [?e :block/uid ?namespace]
+            ]`;
+
+  let result = window.roamAlphaAPI.q(query,uid).flat()[0].parents;
+  // result.sort((a, b) => {
+  //     // Check if 'order' property exists in both objects
+  //     if ('order' in a && 'order' in b) {
+  //         return a.order - b.order; // Sort by 'order'
+  //     } else if ('order' in a) {
+  //         return -1; // 'a' has 'order', so it comes first
+  //     } else if ('order' in b) {
+  //         return 1; // 'b' has 'order', so it comes first
+  //     } else {
+  //         return 0; // Neither has 'order', maintain the current order
+  //     }
+  // });
+  return result.slice(-1)[0].string;
+}
 
 
 
@@ -101,6 +124,8 @@ async function onload({extensionAPI}) {
                                                       let block = window.roamAlphaAPI.ui.getFocusedBlock();
                                                       if (block != null) {
                                                         console.log(block['block-uid']);
+                                                        const contentToSendToGPT = pullParentBlocksContent(block['block-uid'])
+                                                        console.log(contentToSendToGPT)
                                                         fillInBlockWithChildren(block['block-uid'], "Pretend GPT output:", exampleJSON)
                                                       }
                                                     },
