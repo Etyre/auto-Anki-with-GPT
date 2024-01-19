@@ -1,4 +1,6 @@
-import { intializeOpenAIAPI, propperIntializeOpenAIAPI } from "./GPT-API";
+import  intializeOpenAIAPI, { propperIntializeOpenAIAPI }  from "./GPT-API";
+
+// import { intializeOpenAIAPI, propperIntializeOpenAIAPI } from "./GPT-API";
 
 
 const panelConfig = {
@@ -65,12 +67,13 @@ const panelConfig = {
 
 // New Wishlist 
 
-// 0. Continue tinkering with the prompt. See if I can get it to produce cloze deletions.
-// 1. Make a non-janky parser function, using OpenAI functions
-// 3. Organize the flow here so that the janky and non-janky versions are clearly legible and readable and not interfering with each other.
-// 4. Make the janky version add ankify tags.
-// 4. Make it so that the non-janky flow can generate arbitrary numbers of questions (I think.)
-// 5. Try a different "loading..." sign that, has the loading in the first child of the target block, instead of the target block itself.
+// 0.    Continue tinkering with the prompt. See if I can get it to produce cloze deletions.
+// 1. ✅ Make a non-janky parser function, using OpenAI functions
+// 3. ✅ Organize the flow here so that the janky and non-janky versions are clearly legible and readable and not interfering with each other.
+// 4. ✅ Make the janky version add ankify tags.
+// 4. ✅ Make it so that the non-janky flow can generate arbitrary numbers of questions (I think.)
+// 5. ✅ Try a different "loading..." sign that, has the loading in the first child of the target block, instead of the target block itself.
+// 6.    Set up the propper API flow so that cloze cards and "normal" cards are mixed. (I think this makes sense.)
 
 
 // Function that updates a block string and adds some children, with helper functions.
@@ -95,6 +98,7 @@ async function updateBlock(uid, newString) {
 }
 
 async function createChildren(blockUid, childrenContents) {
+  var arrayOfNewChildrenUIDs = []
   for (let index = 0; index < childrenContents.length; index++) {
     const element = childrenContents[index];
     const newBlockUID = roamAlphaAPI.util.generateUID();
@@ -109,7 +113,9 @@ async function createChildren(blockUid, childrenContents) {
     if (element.children) {
       createChildren(newBlockUID, element.children)
     }
+    arrayOfNewChildrenUIDs.push(newBlockUID)
   }
+  return arrayOfNewChildrenUIDs
 }
 
 function fillInBlockWithChildren(blockUID, headerString, childrenContents) {
@@ -148,7 +154,7 @@ async function pullParentBlocksContent(uid) {
 
 const standardPromptNoInstructions = ""
 
-const standardPromptIncludingFormattingIntruction = `I’m making flashcards to review material that I’m reading. I’m going to give you a paragraph of text. Please read this text, extract the important ideas and interesting facts, and make flash cards for one.
+const promptForJankyVersion = `I’m making flashcards to review material that I’m reading. I’m going to give you a paragraph of text. Please read this text, extract the important ideas and interesting facts, and make flash cards for one.
 
 All of the flashcards should be formatted as bullets, with the answer in a nested bullet below the question. Every question should have the tag “#ankify” at the end.
 
@@ -234,16 +240,24 @@ function propperResponseParser(GPTResponseContent){
   const inflatedJSON = JSON.parse(GPTResponseContent.choices[0].message.function_call.arguments)
   console.log(inflatedJSON)
 
-  const formattedForRoamJSON = [
-    { string: inflatedJSON.q_1, children: [{string: inflatedJSON.q_1_a_1}] },
-    { string: inflatedJSON.q_2, children: [{string: inflatedJSON.q_2_a_1}] },
-    { string: inflatedJSON.q_3, children: [{string: inflatedJSON.q_3_a_1}] },
-  ]
+  const arrayOfKeys = Object.keys(inflatedJSON)
+  console.log(arrayOfKeys)
+  let formattedForRoamJSON = []
+  console.log(inflatedJSON)
+  for (let index = 0; index < arrayOfKeys.length; index+=2) {
+    const question = inflatedJSON[arrayOfKeys[index]]
+    const answer = inflatedJSON[arrayOfKeys[index+1]]
+
+    const element = { string: question+' #ankify', children: [{string: answer}] }
+
+    formattedForRoamJSON.push(element)
+
+  }
 
   return formattedForRoamJSON
 }
 
-
+const runJankyVersion = false
 
 async function onload({ extensionAPI }) {
   // set defaults if they dont' exist
@@ -260,24 +274,40 @@ async function onload({ extensionAPI }) {
     callback: async () => {
       // If you want to use the propper version, set the prompt to standardPromptNoInstructions, and use propperIntializeOpenAIAPI and propperResponseParser
       // If you want to use the janky version, set the prompt to standardPromptIncludingFormattingIntruction, and use IntializeOpenAIAPI with jankyResponseParser.
-      standardPromptNoInstructions
       let block = window.roamAlphaAPI.ui.getFocusedBlock();
       if (block != null) {
         console.log(block['block-uid']);
         const blockContentToSendToGPT = await pullParentBlocksContent(block['block-uid'])
         console.log(blockContentToSendToGPT)
-        updateBlock(block['block-uid'], "Loading auto-anki...")
-        const completedPrompt = putTogetherPrompt(standardPromptNoInstructions, blockContentToSendToGPT)
-        console.log(completedPrompt)
-        const GPTResponse = await propperIntializeOpenAIAPI({extensionAPI},completedPrompt)
-        console.log(GPTResponse)
+        await updateBlock(block['block-uid'], "GPT-3-Turbo's first try at flashcards:")
+        const uIDsOfCrateadChildren = await createChildren(block['block-uid'], [{string: "Loading flashcards..."}])
+        const uIDofLoadingBlock = uIDsOfCrateadChildren[0]
+        console.log(uIDsOfCrateadChildren)
 
-        const structuredGPTResponse = propperResponseParser(GPTResponse)
+        // This if-else block switches between the janky version and the propper version.
         
-        // const structuredGPTResponse = propperResponseParser(GPTResponse.choices[0].message.content)
+        let GPTResponse
+        let structuredGPTResponse
+  
+        if(runJankyVersion){ 
+          const completedPrompt = putTogetherPrompt(promptForJankyVersion, blockContentToSendToGPT)
+          console.log(completedPrompt)
+          GPTResponse = await intializeOpenAIAPI({extensionAPI}, completedPrompt)
+          console.log(GPTResponse)
+          structuredGPTResponse = jankyResponseParser(GPTResponse.choices[0].message.content)
+        }else{
+          const completedPrompt = putTogetherPrompt(standardPromptNoInstructions, blockContentToSendToGPT)
+          console.log(completedPrompt)
+          GPTResponse = await propperIntializeOpenAIAPI({extensionAPI}, completedPrompt)
+          console.log(GPTResponse)
+          structuredGPTResponse = propperResponseParser(GPTResponse)
+        }
+        
+        // const structuredGPTResponse = jankyResponseParser(GPTResponse.choices[0].message.content)
 
+        // remove the "loading" sign
+        window.roamAlphaAPI.deleteBlock({"block": {"uid": uIDofLoadingBlock}})
         fillInBlockWithChildren(block['block-uid'], "GPT-3-Turbo's first try at flashcards:", structuredGPTResponse)
-        
       }
     },
     "disable-hotkey": false,
