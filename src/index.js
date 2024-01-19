@@ -1,27 +1,61 @@
+import intializeOpenAIAPI from "./GPT-API";
+
+
+
+
+
+
+
 const panelConfig = {
-  tabTitle: "Test Ext 1",
+  tabTitle: "Auto-anki generator",
   settings: [
-      {id:          "button-setting",
-       name:        "Button test",
-       description: "tests the button",
-       action:      {type:    "button",
-                     onClick: (evt) => { console.log("Button clicked!"); },
-                     content: "Button"}},
-      {id:          "switch-setting",
-       name:        "Switch Test",
-       description: "Test switch component",
-       action:      {type:     "switch",
-                     onChange: (evt) => { console.log("Switch!", evt); }}},
-      {id:     "input-setting",
-       name:   "Input test",
-       action: {type:        "input",
-                placeholder: "placeholder",
-                onChange:    (evt) => { console.log("Input Changed!", evt); }}},
-      {id:     "select-setting",
-       name:   "Select test",
-       action: {type:     "select",
-                items:    ["one", "two", "three"],
-                onChange: (evt) => { console.log("Select Changed!", evt); }}}
+    {
+      id: "openai-api-key",
+      name: "OpenAI API key",
+      description: "For authenticating the OpenAI API",
+      action: {
+        type: "input",
+        placeholder: "Put your OpenAI API key here!",
+        onChange: (evt) => { console.log("Input Changed!", evt.target.value); },
+      }
+    },
+    {
+      id: "button-setting",
+      name: "Button test",
+      description: "tests the button",
+      action: {
+        type: "button",
+        onClick: (evt) => { console.log("Button clicked!"); },
+        content: "Button"
+      }
+    },
+    {
+      id: "switch-setting",
+      name: "Switch Test",
+      description: "Test switch component",
+      action: {
+        type: "switch",
+        onChange: (evt) => { console.log("Switch!", evt); }
+      }
+    },
+    {
+      id: "input-setting",
+      name: "Input test",
+      action: {
+        type: "input",
+        placeholder: "placeholder",
+        onChange: (evt) => { console.log("Input Changed!", evt); }
+      }
+    },
+    {
+      id: "select-setting",
+      name: "Select test",
+      action: {
+        type: "select",
+        items: ["one", "two", "three"],
+        onChange: (evt) => { console.log("Select Changed!", evt); }
+      }
+    }
   ]
 };
 
@@ -35,37 +69,43 @@ const panelConfig = {
 // Function that updates a bloc string and adds some children, with helper functions.
 
 const exampleJSON = [
-    {string: "test 1"},
-    {string: "test 2"}, 
-    {string : "test3", children : 
-    [{string: "test 4"}, {string: "test 5"}]
+  { string: "test 1" },
+  { string: "test 2" },
+  {
+    string: "test3", children:
+      [{ string: "test 4" }, { string: "test 5" }]
   }
 ]
 
-async function updateBlock (uid, newString) {
-  window.roamAlphaAPI.data.block.update({"block" : 
-                                          {"uid": uid, 
-                                          "string": newString}})
+async function updateBlock(uid, newString) {
+  window.roamAlphaAPI.data.block.update({
+    "block":
+    {
+      "uid": uid,
+      "string": newString
+    }
+  })
 }
 
-async function createChildren (blockUid, childrenContents) {
+async function createChildren(blockUid, childrenContents) {
   for (let index = 0; index < childrenContents.length; index++) {
     const element = childrenContents[index];
-    const newBlockUID = roamAlphaAPI.util.generateUID();  
+    const newBlockUID = roamAlphaAPI.util.generateUID();
     window.roamAlphaAPI.createBlock(
-        {"location": 
-          {"parent-uid": blockUid, "order": "last"}, 
-        "block": 
-          {"string": element.string, "uid": newBlockUID}
-        },  
-        )
-      if (element.children) {
-        createChildren(newBlockUID, element.children)
-      }
-      }
+      {
+        "location":
+          { "parent-uid": blockUid, "order": "last" },
+        "block":
+          { "string": element.string, "uid": newBlockUID }
+      },
+    )
+    if (element.children) {
+      createChildren(newBlockUID, element.children)
+    }
+  }
 }
 
-function fillInBlockWithChildren (blockUID, headerString, childrenContents) {
+function fillInBlockWithChildren(blockUID, headerString, childrenContents) {
   updateBlock(blockUID, headerString)
 
   createChildren(blockUID, childrenContents)
@@ -81,7 +121,7 @@ async function pullParentBlocksContent(uid) {
             [?e :block/uid ?namespace]
             ]`;
 
-  let result = window.roamAlphaAPI.q(query,uid).flat()[0].parents;
+  let result = window.roamAlphaAPI.q(query, uid).flat()[0].parents;
   // result.sort((a, b) => {
   //     // Check if 'order' property exists in both objects
   //     if ('order' in a && 'order' in b) {
@@ -97,19 +137,20 @@ async function pullParentBlocksContent(uid) {
   return result.slice(-1)[0].string;
 }
 
+// Constructing the prompt that we'll pass into the GPT API.
+
+const standardPrompt = "Please sumarize the following text: "
+
+function putTogetherPrompt(standardizedPrompt, blockSpecificContent) {
+    return standardizedPrompt + blockSpecificContent
+}
 
 
 
 
 
 
-
-
-
-
-
-
-async function onload({extensionAPI}) {
+async function onload({ extensionAPI }) {
   // set defaults if they dont' exist
   // if (!extensionAPI.settings.get('data')) {
   //     await extensionAPI.settings.set('data', "01");
@@ -119,32 +160,39 @@ async function onload({extensionAPI}) {
   extensionAPI.settings.panel.create(panelConfig);
 
   // Creating a new command palette command
-  extensionAPI.ui.commandPalette.addCommand({label: "create cards",
-                                                    callback : () => {
-                                                      let block = window.roamAlphaAPI.ui.getFocusedBlock();
-                                                      if (block != null) {
-                                                        console.log(block['block-uid']);
-                                                        const contentToSendToGPT = pullParentBlocksContent(block['block-uid'])
-                                                        console.log(contentToSendToGPT)
-                                                        fillInBlockWithChildren(block['block-uid'], "Pretend GPT output:", exampleJSON)
-                                                      }
-                                                    },
-                                                    "disable-hotkey": false,
-                                                    "default-hotkey": "option-cmd-g"})
+  extensionAPI.ui.commandPalette.addCommand({
+    label: "create cards",
+    callback: async () => {
+      let block = window.roamAlphaAPI.ui.getFocusedBlock();
+      if (block != null) {
+        console.log(block['block-uid']);
+        const blockContentToSendToGPT = await pullParentBlocksContent(block['block-uid'])
+        console.log(blockContentToSendToGPT)
+        const completedPrompt = putTogetherPrompt(standardPrompt, blockContentToSendToGPT)
+        console.log(completedPrompt)
+        intializeOpenAIAPI({extensionAPI},completedPrompt)
 
+        // fillInBlockWithChildren(block['block-uid'], "Pretend GPT output:", exampleJSON)
+        
+      }
+    },
+    "disable-hotkey": false,
+    "default-hotkey": "option-cmd-g"
+  })
+  console.log("load auto-anki");
 
-  console.log("load example plugin");
 
 }
 
 function onunload() {
   console.log("unload example plugin");
-  
-
 }
 
 export default {
-onload,
-onunload
+  onload,
+  onunload
 };
+
+
+
 
