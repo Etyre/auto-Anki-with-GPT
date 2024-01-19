@@ -1,4 +1,4 @@
-import intializeOpenAIAPI from "./GPT-API";
+import { intializeOpenAIAPI, propperIntializeOpenAIAPI } from "./GPT-API";
 
 
 const panelConfig = {
@@ -66,8 +66,11 @@ const panelConfig = {
 // New Wishlist 
 
 // 0. Continue tinkering with the prompt. See if I can get it to produce cloze deletions.
-// 1. Make a non-janky parser function, using OpenAI functions.
-// 2. Try a different "loading..." sign that, has the loading in the first child of the target block, instead of the target block itself.
+// 1. Make a non-janky parser function, using OpenAI functions
+// 3. Organize the flow here so that the janky and non-janky versions are clearly legible and readable and not interfering with each other.
+// 4. Make the janky version add ankify tags.
+// 4. Make it so that the non-janky flow can generate arbitrary numbers of questions (I think.)
+// 5. Try a different "loading..." sign that, has the loading in the first child of the target block, instead of the target block itself.
 
 
 // Function that updates a block string and adds some children, with helper functions.
@@ -143,7 +146,9 @@ async function pullParentBlocksContent(uid) {
 
 // Constructing the prompt that we'll pass into the GPT API.
 
-const standardPrompt = `I’m making flashcards to review material that I’m reading. I’m going to give you a paragraph of text. Please read this text, extract the important ideas and interesting facts, and make flash cards for one.
+const standardPromptNoInstructions = ""
+
+const standardPromptIncludingFormattingIntruction = `I’m making flashcards to review material that I’m reading. I’m going to give you a paragraph of text. Please read this text, extract the important ideas and interesting facts, and make flash cards for one.
 
 All of the flashcards should be formatted as bullets, with the answer in a nested bullet below the question. Every question should have the tag “#ankify” at the end.
 
@@ -220,10 +225,24 @@ function jankyResponseParser(GPTResponseContent) {
     }else{
     jsonToReturn.push({ string: element.replace("* ", "") })}
   }
-
   
   return jsonToReturn
 }
+
+// This function will take json-as-a-string, and turn it into real json, and then turn that into the json that is propperly formated for fillBlockWithChildren.
+function propperResponseParser(GPTResponseContent){
+  const inflatedJSON = JSON.parse(GPTResponseContent.choices[0].message.function_call.arguments)
+  console.log(inflatedJSON)
+
+  const formattedForRoamJSON = [
+    { string: inflatedJSON.q_1, children: [{string: inflatedJSON.q_1_a_1}] },
+    { string: inflatedJSON.q_2, children: [{string: inflatedJSON.q_2_a_1}] },
+    { string: inflatedJSON.q_3, children: [{string: inflatedJSON.q_3_a_1}] },
+  ]
+
+  return formattedForRoamJSON
+}
+
 
 
 async function onload({ extensionAPI }) {
@@ -239,17 +258,23 @@ async function onload({ extensionAPI }) {
   extensionAPI.ui.commandPalette.addCommand({
     label: "create cards",
     callback: async () => {
+      // If you want to use the propper version, set the prompt to standardPromptNoInstructions, and use propperIntializeOpenAIAPI and propperResponseParser
+      // If you want to use the janky version, set the prompt to standardPromptIncludingFormattingIntruction, and use IntializeOpenAIAPI with jankyResponseParser.
+      standardPromptNoInstructions
       let block = window.roamAlphaAPI.ui.getFocusedBlock();
       if (block != null) {
         console.log(block['block-uid']);
         const blockContentToSendToGPT = await pullParentBlocksContent(block['block-uid'])
         console.log(blockContentToSendToGPT)
         updateBlock(block['block-uid'], "Loading auto-anki...")
-        const completedPrompt = putTogetherPrompt(standardPrompt, blockContentToSendToGPT)
+        const completedPrompt = putTogetherPrompt(standardPromptNoInstructions, blockContentToSendToGPT)
         console.log(completedPrompt)
-        const GPTResponse = await intializeOpenAIAPI({extensionAPI},completedPrompt)
+        const GPTResponse = await propperIntializeOpenAIAPI({extensionAPI},completedPrompt)
+        console.log(GPTResponse)
 
-        const structuredGPTResponse = jankyResponseParser(GPTResponse.choices[0].message.content)
+        const structuredGPTResponse = propperResponseParser(GPTResponse)
+        
+        // const structuredGPTResponse = propperResponseParser(GPTResponse.choices[0].message.content)
 
         fillInBlockWithChildren(block['block-uid'], "GPT-3-Turbo's first try at flashcards:", structuredGPTResponse)
         
