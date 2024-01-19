@@ -73,7 +73,7 @@ const panelConfig = {
 // 4. ✅ Make the janky version add ankify tags.
 // 4. ✅ Make it so that the non-janky flow can generate arbitrary numbers of questions (I think.)
 // 5. ✅ Try a different "loading..." sign that, has the loading in the first child of the target block, instead of the target block itself.
-// 6.    Set up the propper API flow so that cloze cards and "normal" cards are mixed. (I think this makes sense.)
+// 6.    Set up the propper API flow so that cloze cards and "normal" cards are mixed. (I think this makes sense.) 
 
 
 // Function that updates a block string and adds some children, with helper functions.
