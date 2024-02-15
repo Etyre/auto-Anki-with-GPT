@@ -126,8 +126,6 @@ function fillInBlockWithChildren(blockUID, headerString, childrenContents) {
 
 // Function that grabs the contents of the parent of the the block you call the function from.
 
-
-
 async function pullParentBlocksContent(uid) {
   let query = `[:find (pull ?e [* {:block/parents ...}])
               ; The syntax of {: block/parents ...} means "pull the parents recursively"
@@ -230,6 +228,7 @@ Make between 1 and 5 flashcards: as many as is necessary to capture all the impo
 
 Here is the text to make flashcards for:
 
+`
 
 
 
