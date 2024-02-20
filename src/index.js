@@ -308,7 +308,7 @@ async function onload({ extensionAPI }) {
         console.log(block['block-uid']);
         const blockContentToSendToGPT = await pullParentBlocksContent(block['block-uid'])
         console.log(blockContentToSendToGPT)
-        await updateBlock(block['block-uid'], "GPT-3-Turbo's first try at flashcards: #[[auto-anki]]")
+        await updateBlock(block['block-uid'], "GPT-3-Turbo's first try at flashcards:")
         const uIDsOfCrateadChildren = await createChildren(block['block-uid'], [{string: "Loading flashcards..."}])
         const uIDofLoadingBlock = uIDsOfCrateadChildren[0]
         console.log(uIDsOfCrateadChildren)
@@ -336,7 +336,7 @@ async function onload({ extensionAPI }) {
 
         // remove the "loading" sign
         window.roamAlphaAPI.deleteBlock({"block": {"uid": uIDofLoadingBlock}})
-        fillInBlockWithChildren(block['block-uid'], "GPT-3-Turbo's first try at flashcards:", structuredGPTResponse)
+        fillInBlockWithChildren(block['block-uid'], "GPT-3-Turbo's first try at flashcards: #[[auto-anki]]", structuredGPTResponse)
       }
     },
     "disable-hotkey": false,
