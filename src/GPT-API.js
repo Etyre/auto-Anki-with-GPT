@@ -11,7 +11,7 @@ async function intializeOpenAIAPI({ extensionAPI }, completedPrompt) {
   console.log(openai)
   const params = {
     messages: [{ role: 'user', content: completedPrompt }],
-    model: 'gpt-3.5-turbo',
+    model: 'gpt-4',
   };
   const chatCompletion = await openai.chat.completions.create(params);
   console.log(chatCompletion)
@@ -133,6 +133,7 @@ const anki_cloze_custom_functions = [
     }
   }
 ]
+
 //The function itself:
 export async function propperIntializeOpenAIAPI({ extensionAPI }, completedPrompt) {
   const openai = new OpenAI({
@@ -142,7 +143,7 @@ export async function propperIntializeOpenAIAPI({ extensionAPI }, completedPromp
   console.log(openai)
   const params = {
     messages: [{ role: 'user', content: completedPrompt }],
-    model: 'gpt-3.5-turbo',
+    model: 'gpt-4',
     functions: anki_questions_custom_functions,
     function_call: 'auto',
     // n: 20,

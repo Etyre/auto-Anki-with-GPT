@@ -41,7 +41,7 @@ Instead of...
 
 2) Each flash card should have as few words as possible, while still capturing all of the important details about a fact or idea. Most questions, and most answers should have fewer than 10 words. 
 
-Condense the sentences as much as possible while still getting the core idea across.
+Condense the sentences as much as possible while still getting the core idea across. It's better to break an idea into multiple, shorter, questions, so long as each question is complete and comprehensible on it's own.
 
 
 
