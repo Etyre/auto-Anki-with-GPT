@@ -286,7 +286,7 @@ function propperResponseParser(GPTResponseContent){
   return formattedForRoamJSON
 }
 
-const runJankyVersion = false
+const runJankyVersion = true
 
 async function onload({ extensionAPI }) {
   // set defaults if they dont' exist
