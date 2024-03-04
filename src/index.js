@@ -336,7 +336,7 @@ async function onload({ extensionAPI }) {
 
         // remove the "loading" sign
         window.roamAlphaAPI.deleteBlock({"block": {"uid": uIDofLoadingBlock}})
-        fillInBlockWithChildren(block['block-uid'], "GPT-3-Turbo's first try at flashcards: #[[auto-anki]]", structuredGPTResponse)
+        fillInBlockWithChildren(block['block-uid'], "GPT-4's first try at flashcards: #[[auto-anki]]", structuredGPTResponse)
       }
     },
     "disable-hotkey": false,
