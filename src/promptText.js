@@ -41,6 +41,17 @@ Instead of...
 
 2) Each flash card should have as few words as possible, while still capturing all of the important details about a fact or idea. Most questions, and most answers should have fewer than 10 words. 
 
+Instead of...
+
+* What is the purpose of node's "watch mode" in node? #ankify
+    *  It automatically reruns a file when changes are made.
+
+...the question should be...
+
+* What does node's "watch mode" do? #ankify
+    *  It automatically reruns a file when changes are made.
+
+
 Condense the sentences as much as possible while still getting the core idea across. It's better to break an idea into multiple, shorter, questions, so long as each question is complete and comprehensible on it's own.
 
 
@@ -49,14 +60,9 @@ Make between 1 and 7 flashcards in total—as many as is necessary to capture al
 
 Here is the text to make flashcards for:
 
-`
+`;
 
-
-
-
-
-export default promptForJankyVersion
-
+export default promptForJankyVersion;
 
 const extaBitAboutClozes = `Alternatively, cards can be a single bullet point with a “cloze”. A “cloze” card is a sentence with one or more blanks, for the user to fill in themselves, to complete the sentence. The cloze should be the most important part of the sentence, for the user to guess. The format is to write the full sentence, and then enclose the answer (the part of the text that will be represented as a blank) in curly brackets. Each cloze should start with the number “1”, and a colon. There can be multiple clozes in a sentence. The bullet point should still have the “#ankify” tag.
 
@@ -80,4 +86,4 @@ Some examples of cloze cards:
 
 * In 1900, people went without {fresh fruit and vegetables} for most of the year. #ankify
 
-The cloze should be selected so that there's a unique corect answer (instead of several ways to fill in then blank that would still be correct), and open ended enough that the answer isn't obvious from the rest fo the sentence.`
+The cloze should be selected so that there's a unique corect answer (instead of several ways to fill in then blank that would still be correct), and open ended enough that the answer isn't obvious from the rest fo the sentence.`;
