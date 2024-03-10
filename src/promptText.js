@@ -51,6 +51,18 @@ Instead of...
 * What does node's "watch mode" do? #ankify
     *  It automatically reruns a file when changes are made.
 
+Instead of...
+
+* What is the objective of an "upsert" operation? #ankify
+    *  The objective is to save data in the database, regardless if it already exists or not.
+
+...write...
+
+* What does the "upsert" operation do? #ankify
+    *  Save data in the database, regardless if it already exists or not.
+
+
+
 
 Condense the sentences as much as possible while still getting the core idea across. It's better to break an idea into multiple, shorter, questions, so long as each question is complete and comprehensible on it's own.
 
