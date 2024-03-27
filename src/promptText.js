@@ -35,31 +35,42 @@ Instead of...
 
 ...write...
 
-* What happen to wages during WWII? #ankify
-    * Wages were frozen.
+- What happen to wages during WWII? #ankify
+    - Wages were frozen.
 
 
 2) Each flash card should have as few words as possible, while still capturing all of the important details about a fact or idea. Most questions, and most answers should have fewer than 10 words. 
 
 Instead of...
 
-* What is the purpose of node's "watch mode" in node? #ankify
-    *  It automatically reruns a file when changes are made.
+- What is the purpose of node's "watch mode" in node? #ankify
+    -  It automatically reruns a file when changes are made.
 
 ...the question should be...
 
-* What does node's "watch mode" do? #ankify
-    *  It automatically reruns a file when changes are made.
+- What does node's "watch mode" do? #ankify
+    -  It automatically reruns a file when changes are made.
 
 Instead of...
 
-* What is the objective of an "upsert" operation? #ankify
-    *  The objective is to save data in the database, regardless if it already exists or not.
+- What is the objective of an "upsert" operation? #ankify
+    -  The objective is to save data in the database, regardless if it already exists or not.
 
 ...write...
 
-* What does the "upsert" operation do? #ankify
-    *  Save data in the database, regardless if it already exists or not.
+- What does the "upsert" operation do? #ankify
+    -  Save data in the database, regardless if it already exists or not.
+
+Instead of...
+
+- What action does Fetch perform? #ankify
+    -  It sends an HTTP request.
+
+...write...
+
+- What does Fetch do? #ankify
+    -  It sends an HTTP request.
+
 
 
 
