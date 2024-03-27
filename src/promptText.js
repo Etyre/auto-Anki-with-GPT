@@ -35,7 +35,7 @@ Instead of...
 
 ...write...
 
-- What happen to wages during WWII? 
+- What happened to wages during WWII? 
     - Wages were frozen.
 
 
