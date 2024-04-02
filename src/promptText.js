@@ -1,17 +1,17 @@
 const promptForJankyVersion = `I’m making flashcards to review material that I’m reading. I’m going to give you a selection of text. Please read this selection, extract the important ideas and interesting facts, and make flash cards for each.
 
-All of the flashcards should be formatted as bullets, with the answer in a nested bullet below the question. 
+All of the flashcards should be formatted as bullets, with the answer in a nested bullet below the question. Every nested bullet should start with "!&!" character. 
 
 Here are some example flashcards:
 
-- What percentage of American women were working in offices in 1900? 
-   - About 20%
+What percentage of American women were working in offices in 1900? 
+!#! About 20%
 
-- How was it regarded if a woman was working in an office in 1900? 
-   - It was lamented as an unfortunate result of financial stress, and slightly shameful to her father.
+How was it regarded if a woman was working in an office in 1900? 
+!&! It was lamented as an unfortunate result of financial stress, and slightly shameful to her father.
 
-- Why was it lamentable for a woman to be working in an office in 1900? 
-   - Because this would subject them to temptations of being seduced.
+Why was it lamentable for a woman to be working in an office in 1900? 
+!&! Because this would subject them to temptations of being seduced.
 
 
 Some rules for formulating questions:
@@ -20,58 +20,56 @@ Some rules for formulating questions:
 
 Instead of a question like... 
 
-- Was the public enthusiastic about the war during World War II? 
-    - No, the public was not very gung ho or enthusiastic about it.
+Was the public enthusiastic about the war during World War II? 
+!&! No, the public was not very gung ho or enthusiastic about it.
 
 ...produce a question like...
 
-- What was the attitude of the American public towards World War II? 
-    - Determined to do what needs to be done, but without enthusiasm or patriotic fervor. 
+What was the attitude of the American public towards World War II? 
+!&! Determined to do what needs to be done, but without enthusiasm or patriotic fervor. 
 
 Instead of...
 
-- Were wages frozen during WWII? 
-    - Yes.
+Were wages frozen during WWII? 
+!&! Yes.
 
 ...write...
 
-- What happened to wages during WWII? 
-    - Wages were frozen.
+What happened to wages during WWII? 
+!&! Wages were frozen.
 
 
 2) Each flash card should have as few words as possible, while still capturing all of the important details about a fact or idea. Most questions, and most answers should have fewer than 10 words. 
 
 Instead of...
 
-- What is the purpose of node's "watch mode" in node? 
-    -  It automatically reruns a file when changes are made.
+What is the purpose of node's "watch mode" in node? 
+!&! It automatically reruns a file when changes are made.
 
 ...the question should be...
 
-- What does node's "watch mode" do? 
-    -  It automatically reruns a file when changes are made.
+What does node's "watch mode" do? 
+!&! It automatically reruns a file when changes are made.
 
 Instead of...
 
-- What is the objective of an "upsert" operation? 
-    -  The objective is to save data in the database, regardless if it already exists or not.
+What is the objective of an "upsert" operation? 
+!&! The objective is to save data in the database, regardless if it already exists or not.
 
 ...write...
 
-- What does the "upsert" operation do? 
-    -  Save data in the database, regardless if it already exists or not.
+What does the "upsert" operation do? 
+!&! Save data in the database, regardless if it already exists or not.
 
 Instead of...
 
-- What action does Fetch perform? 
-    -  It sends an HTTP request.
+What action does Fetch perform? 
+!&! It sends an HTTP request.
 
 ...write...
 
-- What does Fetch do? 
-    -  It sends an HTTP request.
-
-
+What does Fetch do? 
+!&! It sends an HTTP request.
 
 
 
@@ -79,7 +77,7 @@ Condense the sentences as much as possible while still getting the core idea acr
 
 
 
-Make between 1 and 7 flashcards in total—as many as is necessary to capture all the important or interesting ideas and facts in the text.
+Make as many question answer pairs as is necessary to capture all the important or interesting ideas and facts in the text.
 
 Here is the text to make flashcards for:
 

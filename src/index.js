@@ -173,7 +173,7 @@ function jankyResponseParser(GPTResponseContent) {
   for (let index = 0; index < separatedGPTResponseContent.length; index++) {
     const element = separatedGPTResponseContent[index];
     if (element.includes("\n   -")) {
-      const [question, answer] = element.split("\n   *");
+      const [question, answer] = element.split("!&!");
 
       console.log(question, answer);
 
