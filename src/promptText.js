@@ -71,7 +71,7 @@ Instead of...
 - What does Fetch do? 
     !&! It sends an HTTP request.
 
-Instaed of...
+Instead of...
 
 - When was Hamas founded?
     !&! In 1987.
@@ -80,6 +80,17 @@ Instaed of...
 
 - When was Hamas founded?
     !&! 1987.
+
+Instead of...
+
+- How can a copy of an object be made in JavaScript?
+    !&! By spreading that object inside a new object.
+
+...write...
+
+- In JavaScript, do you do copy an object?
+    !&! By spreading it a new object.
+
 
 
 Condense the sentences as much as possible while still getting the core idea across. It's better to break an idea into multiple, shorter, questions, so long as each question is complete and comprehensible on it's own.
