@@ -74,6 +74,14 @@ Instead of...
 
 - In JavaScript, do you do copy an object? !&! By spreading it a new object.
 
+Instead of...
+
+- What do I do if I want to know what the value of a given prop? !&! Look where the component is implemented / used.
+
+...write...
+
+- How do I check the value of a prop? !&! Look where the component is used.
+
 
 
 Condense the sentences as much as possible while still getting the core idea across. It's better to break an idea into multiple, shorter, questions, so long as each question is complete and comprehensible on it's own.
@@ -108,4 +116,17 @@ Some examples of cloze cards:
 
 * In 1900, people went without {fresh fruit and vegetables} for most of the year. 
 
-The cloze should be selected so that there's a unique corect answer (instead of several ways to fill in then blank that would still be correct), and open ended enough that the answer isn't obvious from the rest fo the sentence.`;
+The cloze should be selected so that there's a unique correct answer (instead of several ways to fill in then blank that would still be correct), and open ended enough that the answer isn't obvious from the rest fo the sentence.
+
+
+
+An example of 
+
+- A controlled input's value is hardcoded. 
+- A controlled input has a hardcoded value. 
+
+
+
+
+
+`;
