@@ -243,7 +243,7 @@ async function onload({ extensionAPI }) {
         console.log(blockContentToSendToGPT);
         await updateBlock(
           block["block-uid"],
-          "GPT-4's first try at flashcards:"
+          "GPT-5's first try at flashcards:"
         );
         const uIDsOfCrateadChildren = await createChildren(block["block-uid"], [
           { string: "Loading flashcards..." },
@@ -290,7 +290,7 @@ async function onload({ extensionAPI }) {
         window.roamAlphaAPI.deleteBlock({ block: { uid: uIDofLoadingBlock } });
         fillInBlockWithChildren(
           block["block-uid"],
-          "GPT-4's first try at flashcards: #[[auto-anki]]",
+          "GPT-5's first try at flashcards: #[[auto-anki]]",
           structuredGPTResponse
         );
       }
